@@ -5,9 +5,11 @@ import com.zonner.RandomActivityApp.builder.ActivityEntityBuilder;
 import com.zonner.RandomActivityApp.models.entity.ActivityEntity;
 import com.zonner.RandomActivityApp.models.entity.dto.ActivityDtoInput;
 import com.zonner.RandomActivityApp.models.entity.dto.ActivityDtoOutput;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
 public class ActivityMapper {
     public ActivityEntity dtoToEntity(ActivityDtoInput activityDtoInput) {
         if (activityDtoInput == null) {

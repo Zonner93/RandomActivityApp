@@ -1,6 +1,9 @@
 package com.zonner.RandomActivityApp.controller;
 
+import com.zonner.RandomActivityApp.mapper.ActivityMapper;
 import com.zonner.RandomActivityApp.models.entity.ActivityEntity;
+import com.zonner.RandomActivityApp.models.entity.dto.ActivityDtoInput;
+import com.zonner.RandomActivityApp.models.entity.dto.ActivityDtoOutput;
 import com.zonner.RandomActivityApp.repository.ActivityRepository;
 import com.zonner.RandomActivityApp.service.ActivityService;
 import lombok.AllArgsConstructor;
@@ -8,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @AllArgsConstructor
@@ -18,25 +21,29 @@ import java.util.List;
 public class ActivityController {
     private final ActivityRepository activityRepository;
     private final ActivityService activityService;
+    private final ActivityMapper activityMapper;
 
     @GetMapping("/activity")
-    public ActivityEntity getActivity(){
+    public ActivityDtoOutput getActivity() {
         return activityService.getActivity();
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String key) {
+    public ResponseEntity<List<ActivityDtoOutput>> getAllActivities(@RequestParam(required = false) String key) {
         try {
-            List<ActivityEntity> activityEntityList = new ArrayList<>();
+            List<ActivityEntity> activityEntityList;
+            List<ActivityDtoOutput> activityDtoOutputList;
             if (key == null) {
-                activityEntityList.addAll(activityRepository.findAll());
+                activityEntityList = activityRepository.findAll();
             } else {
-                activityEntityList.addAll(activityRepository.findByKey(key));
+                activityEntityList = activityRepository.findByKey(key);
             }
+            activityDtoOutputList = activityEntityList
+                    .stream().map(activityMapper::entityToDto).collect(Collectors.toList());
             if (activityEntityList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(activityEntityList, HttpStatus.OK);
+            return new ResponseEntity<>(activityDtoOutputList, HttpStatus.OK);
 
 
         } catch (Exception e) {

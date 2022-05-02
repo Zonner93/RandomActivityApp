@@ -13,8 +13,7 @@ public class ResponseService {
     private final RestTemplate restTemplate;
     private final String ACTIVITY_URL = "https://www.boredapi.com/api/activity";
 
-    public ResponseEntity<ActivityDtoInput> getActivity() {
-        ResponseEntity<ActivityDtoInput> activityDtoInput = restTemplate.getForEntity(ACTIVITY_URL, ActivityDtoInput.class);
-        return activityDtoInput;
+    public ResponseEntity<ActivityEntity> getActivity() {
+        return restTemplate.getForEntity(ACTIVITY_URL, ActivityEntity.class);
     }
 }

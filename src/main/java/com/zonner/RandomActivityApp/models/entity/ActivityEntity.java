@@ -17,20 +17,20 @@ public class ActivityEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String activity;
-    private String activityType;
+    private String type;
     private int participants;
     private double price;
     private String link;
-    private String activityKey;
+    private String key;
     private double accessibility;
 
-    public ActivityEntity(String activity, String activityType, int participants, double price, String link, String activityKey, double accessibility) {
+    public ActivityEntity(String activity, String type, int participants, double price, String link, String key, double accessibility) {
         this.activity = activity;
-        this.activityType = activityType;
+        this.type = type;
         this.participants = participants;
         this.price = price;
         this.link = link;
-        this.activityKey = activityKey;
+        this.key = key;
         this.accessibility = accessibility;
     }
 }

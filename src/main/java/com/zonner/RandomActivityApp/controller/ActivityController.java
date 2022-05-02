@@ -25,13 +25,13 @@ public class ActivityController {
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String activityKey) {
+    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String key) {
         try {
             List<ActivityEntity> activityEntityList = new ArrayList<>();
-            if (activityKey == null) {
+            if (key == null) {
                 activityEntityList.addAll(activityRepository.findAll());
             } else {
-                activityEntityList.addAll(activityRepository.findByActivityKey(activityKey));
+                activityEntityList.addAll(activityRepository.findByKey(key));
             }
             if (activityEntityList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,8 +48,8 @@ public class ActivityController {
     public ResponseEntity<ActivityEntity> createActivity(@RequestBody ActivityEntity activity) {
         try {
             ActivityEntity activityEntity = activityRepository.save(new ActivityEntity(
-                    activity.getActivity(), activity.getActivityType(), activity.getParticipants(),
-                    activity.getPrice(), activity.getLink(), activity.getActivityKey(),
+                    activity.getActivity(), activity.getType(), activity.getParticipants(),
+                    activity.getPrice(), activity.getLink(), activity.getKey(),
                     activity.getAccessibility()
             ));
             return new ResponseEntity<>(activityEntity, HttpStatus.CREATED);

@@ -18,9 +18,9 @@ public class ActivityEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String activity;
-    private String recreational;
+    private String activityType;
     private int participants;
-    private int price;
+    private double price;
     private String link;
     private String activityKey;
     private double accessibility;

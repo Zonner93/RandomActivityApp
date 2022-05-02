@@ -18,14 +18,14 @@ public class ActivityController {
     private final ActivityRepository activityRepository;
 
     @GetMapping("/activities")
-    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String activity) {
+    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String activityKey) {
         try {
             List<ActivityEntity> activityEntityList = new ArrayList<>();
-            if (activity == null) {
+            if (activityKey == null) {
                 activityEntityList.addAll(activityRepository.findAll());
             }
             else {
-                activityEntityList.addAll(activityRepository.findByActivity(activity));
+                activityEntityList.addAll(activityRepository.findByActivityKey(activityKey));
             }
             if(activityEntityList.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

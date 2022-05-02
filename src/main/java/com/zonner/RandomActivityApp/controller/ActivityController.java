@@ -2,6 +2,7 @@ package com.zonner.RandomActivityApp.controller;
 
 import com.zonner.RandomActivityApp.models.entity.ActivityEntity;
 import com.zonner.RandomActivityApp.repository.ActivityRepository;
+import com.zonner.RandomActivityApp.service.ActivityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class ActivityController {
     private final ActivityRepository activityRepository;
+    private final ActivityService activityService;
+
+    @GetMapping("/activity")
+    public ActivityEntity getActivity(){
+        return activityService.getActivity();
+    }
 
     @GetMapping("/activities")
     public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String activityKey) {

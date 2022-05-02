@@ -23,11 +23,10 @@ public class ActivityController {
             List<ActivityEntity> activityEntityList = new ArrayList<>();
             if (activityKey == null) {
                 activityEntityList.addAll(activityRepository.findAll());
-            }
-            else {
+            } else {
                 activityEntityList.addAll(activityRepository.findByActivityKey(activityKey));
             }
-            if(activityEntityList.isEmpty()){
+            if (activityEntityList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(activityEntityList, HttpStatus.OK);
@@ -35,6 +34,20 @@ public class ActivityController {
 
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/activities")
+    public ResponseEntity<ActivityEntity> createActivity(@RequestBody ActivityEntity activity) {
+        try {
+            ActivityEntity activityEntity = activityRepository.save(new ActivityEntity(
+                    activity.getActivity(), activity.getActivityType(), activity.getParticipants(),
+                    activity.getPrice(), activity.getLink(), activity.getActivityKey(),
+                    activity.getAccessibility()
+            ));
+            return new ResponseEntity<>(activityEntity, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

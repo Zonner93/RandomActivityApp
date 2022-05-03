@@ -20,7 +20,7 @@ public class ActivityController {
     private final ActivityService activityService;
 
     @GetMapping("/activity")
-    public Activity getActivity(){
+    public ResponseEntity<Activity> getActivity() {
         return activityService.getActivity();
     }
 
@@ -46,15 +46,6 @@ public class ActivityController {
 
     @PostMapping("/activities")
     public ResponseEntity<Activity> createActivity(@RequestBody Activity activity) {
-        try {
-            Activity activityEntity = activityRepository.save(new Activity(
-                    activity.getActivity(), activity.getType(), activity.getParticipants(),
-                    activity.getPrice(), activity.getLink(), activity.getKey(),
-                    activity.getAccessibility()
-            ));
-            return new ResponseEntity<>(activityEntity, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return activityService.createActivity(activity);
     }
 }

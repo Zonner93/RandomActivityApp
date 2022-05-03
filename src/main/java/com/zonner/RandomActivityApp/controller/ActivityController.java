@@ -1,7 +1,8 @@
 package com.zonner.RandomActivityApp.controller;
 
-import com.zonner.RandomActivityApp.models.entity.ActivityEntity;
+import com.zonner.RandomActivityApp.models.entity.Activity;
 import com.zonner.RandomActivityApp.repository.ActivityRepository;
+import com.zonner.RandomActivityApp.service.ActivityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +17,26 @@ import java.util.List;
 @RequestMapping("/api")
 public class ActivityController {
     private final ActivityRepository activityRepository;
+    private final ActivityService activityService;
+
+    @GetMapping("/activity")
+    public ResponseEntity<Activity> getActivity() {
+        return activityService.getActivity();
+    }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<ActivityEntity>> getAllActivities(@RequestParam(required = false) String activityKey) {
+    public ResponseEntity<List<Activity>> getAllActivities(@RequestParam(required = false) String key) {
         try {
-            List<ActivityEntity> activityEntityList = new ArrayList<>();
-            if (activityKey == null) {
-                activityEntityList.addAll(activityRepository.findAll());
+            List<Activity> activityList = new ArrayList<>();
+            if (key == null) {
+                activityList.addAll(activityRepository.findAll());
             } else {
-                activityEntityList.addAll(activityRepository.findByActivityKey(activityKey));
+                activityList.addAll(activityRepository.findByKey(key));
             }
-            if (activityEntityList.isEmpty()) {
+            if (activityList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(activityEntityList, HttpStatus.OK);
+            return new ResponseEntity<>(activityList, HttpStatus.OK);
 
 
         } catch (Exception e) {
@@ -38,16 +45,7 @@ public class ActivityController {
     }
 
     @PostMapping("/activities")
-    public ResponseEntity<ActivityEntity> createActivity(@RequestBody ActivityEntity activity) {
-        try {
-            ActivityEntity activityEntity = activityRepository.save(new ActivityEntity(
-                    activity.getActivity(), activity.getActivityType(), activity.getParticipants(),
-                    activity.getPrice(), activity.getLink(), activity.getActivityKey(),
-                    activity.getAccessibility()
-            ));
-            return new ResponseEntity<>(activityEntity, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Activity> createActivity(@RequestBody Activity activity) {
+        return activityService.createActivity(activity);
     }
 }

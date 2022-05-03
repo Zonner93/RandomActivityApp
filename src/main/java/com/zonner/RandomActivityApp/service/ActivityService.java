@@ -17,7 +17,6 @@ public class ActivityService {
 
     public ResponseEntity<Activity> getActivity() {
         Activity activity = responseService.getActivity().getBody();
-
         if (isActivityInDatabase(activity.getKey())) {
             getActivity();
         }
@@ -39,6 +38,7 @@ public class ActivityService {
 
     public ResponseEntity<Activity> createActivity(Activity activity) {
         try {
+
             Activity activityEntity = activityRepository.save(new Activity(
                     activity.getActivity(), activity.getType(), activity.getParticipants(),
                     activity.getPrice(), activity.getLink(), activity.getKey(),

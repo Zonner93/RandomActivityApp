@@ -1,5 +1,7 @@
 package com.zonner.RandomActivityApp.service;
 
+import com.zonner.RandomActivityApp.exceptions.Activity.ActivityError;
+import com.zonner.RandomActivityApp.exceptions.Activity.ActivityException;
 import com.zonner.RandomActivityApp.models.entity.Activity;
 import com.zonner.RandomActivityApp.repository.ActivityRepository;
 import lombok.AllArgsConstructor;
@@ -17,28 +19,12 @@ public class ActivityService {
 
     public ResponseEntity<Activity> getActivity() {
         Activity activity = responseService.getActivity().getBody();
-        if (isActivityInDatabase(activity.getKey())) {
-            getActivity();
-        }
-
+        checkIfActivityAlreadyExists(activity.getKey());
         return createActivity(activity);
-    }
-
-    private boolean isActivityInDatabase(String activityKey) {
-        List<Activity> activityList = activityRepository.findByKey(activityKey);
-        if (activityList.isEmpty()) {
-            return false;
-        }
-        return true;
-    }
-
-    public List<Activity> getActivityListByKey(String key) {
-        return activityRepository.findByKey(key);
     }
 
     public ResponseEntity<Activity> createActivity(Activity activity) {
         try {
-
             Activity activityEntity = activityRepository.save(new Activity(
                     activity.getActivity(), activity.getType(), activity.getParticipants(),
                     activity.getPrice(), activity.getLink(), activity.getKey(),
@@ -49,4 +35,29 @@ public class ActivityService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseEntity<List<Activity>> getAllActivities(){
+        try {
+            List<Activity> activityList = activityRepository.findAll();
+            if (activityList.isEmpty()) {
+                throw new ActivityException(ActivityError.ACTIVITY_EMPTY_LIST);
+            }
+            return new ResponseEntity<>(activityList, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private List<Activity> getActivityListByKey(String key) {
+        return activityRepository.findByKey(key);
+    }
+
+    private void checkIfActivityAlreadyExists(String key) {
+        List<Activity> activityList = getActivityListByKey(key);
+        if (!activityList.isEmpty()) {
+            throw new ActivityException(ActivityError.ACTIVITY_ALREADY_EXISTS);
+        }
+    }
+
 }

@@ -19,6 +19,7 @@ public class ActivityService {
 
     public ResponseEntity<Activity> getActivity() {
         Activity activity = responseService.getActivity().getBody();
+        //FIXME activity could be null, and getKey might throw NPE
         checkIfActivityAlreadyExists(activity.getKey());
         return createActivity(activity);
     }
@@ -31,6 +32,7 @@ public class ActivityService {
                     activity.getAccessibility()
             ));
             return new ResponseEntity<>(activityEntity, HttpStatus.CREATED);
+            //FIXME it is bad practice to catch Exception - you should know what kind of exception can be thrown and catch only that
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -43,7 +45,7 @@ public class ActivityService {
                 throw new ActivityException(ActivityError.ACTIVITY_EMPTY_LIST);
             }
             return new ResponseEntity<>(activityList, HttpStatus.OK);
-
+//FIXME it is bad practice to catch Exception - you should know what kind of exception can be thrown and catch only that
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

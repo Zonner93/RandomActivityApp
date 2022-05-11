@@ -13,8 +13,10 @@ import javax.persistence.*;
 @Table(name = "activities")
 public class Activity {
 
+    //TODO some of these variables might require some validation in setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //TODO why is this an Object? wouldn't long be enough? wouldn't int be enough?
     private Long id;
     private String activity;
     private String type;
